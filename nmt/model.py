@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2017 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,7 +57,8 @@ class InferOutputTuple(collections.namedtuple(
 
 
 class BaseModel(object):
-  """Sequence-to-sequence base class.
+  """
+  seq2seq模型的基类
   """
 
   def __init__(self,
@@ -68,18 +70,17 @@ class BaseModel(object):
                reverse_target_vocab_table=None,
                scope=None,
                extra_args=None):
-    """Create the model.
+    """更新模型
 
     Args:
       hparams: Hyperparameter configurations.
       mode: TRAIN | EVAL | INFER
-      iterator: Dataset Iterator that feeds data.
-      source_vocab_table: Lookup table mapping source words to ids.
-      target_vocab_table: Lookup table mapping target words to ids.
-      reverse_target_vocab_table: Lookup table mapping ids to target words. Only
-        required in INFER mode. Defaults to None.
-      scope: scope of the model.
-      extra_args: model_helper.ExtraArgs, for passing customizable functions.
+      iterator: 数据集的iterator，用来循环地喂数据给模型
+      source_vocab_table: 将源句单词转换为对应的id
+      target_vocab_table: 将目标句转换为对应的id
+      reverse_target_vocab_table: 将id转换为目标句的单词，只在推理阶段用到
+      scope: 模型所处scope
+      extra_args: 额外的参数，用来传递配套的函数
 
     """
     # Set params
@@ -99,6 +100,10 @@ class BaseModel(object):
     # Saver
     self.saver = tf.train.Saver(
         tf.global_variables(), max_to_keep=hparams.num_keep_ckpts)
+
+    """
+    上方代码设置好了参数，建了tensor graph，以及设置好了用来保存模型的saver
+    """
 
   def _set_params_initializer(self,
                               hparams,
